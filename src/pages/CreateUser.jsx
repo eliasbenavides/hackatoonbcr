@@ -10,13 +10,29 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  Container,
   Typography,
   Box,
 } from "@mui/material";
 import { professions } from "../data-mock/professions";
+import { getProfessions } from "../services/api";
+import { useEffect } from "react";
+
 const CreateUser = () => {
   const { control, handleSubmit } = useForm();
+
+  useEffect(() => {
+    getProfessionsList();
+  }, []);
+
+  const getProfessionsList = async () => {
+    try {
+      const { data } = await getProfessions();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onSubmit = (data) => {
     console.log(data);
   };

@@ -1,10 +1,9 @@
-import * as React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { getUsers } from "../services/api";
-import {useDemoData} from '@mui/x-data-grid-generator'
+import { useDemoData } from "@mui/x-data-grid-generator";
 
 const SearchUsers = () => {
   const [tableData, setTableData] = useState([]);
@@ -38,7 +37,6 @@ const SearchUsers = () => {
 
     fetchUsers();
   }, []);
-
 
   return (
     <div className="content-filter">
