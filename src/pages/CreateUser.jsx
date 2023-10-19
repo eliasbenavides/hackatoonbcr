@@ -16,10 +16,12 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { getLocations, getProfessions } from "../services/api";
+import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const CreateUser = () => {
+  const navigate = useNavigate();
   const { control, handleSubmit } = useForm();
   const [professions, setProfessions] = useState([]);
   const [provinces, setProvinces] = useState([]);
@@ -37,11 +39,25 @@ const CreateUser = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (dataValues) => {
     if (activeStep < steps.length - 1) {
       handleNext();
     } else {
-      console.log(data); // Realizar acción con los datos finales
+      // Realizar acción con los datos finales
+      const body = {
+        ...dataValues,
+        idCanton: +dataValues?.idCanton,
+        idProfesion: +dataValues?.idProfesion,
+        idProvincia: +dataValues?.idProvincia,
+        edad: +dataValues.edad,
+        id: 1,
+      };
+      try {
+        await createUser(body);
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -123,7 +139,7 @@ const CreateUser = () => {
         {activeStep === 0 && (
           <Box display="flex" flexDirection="column">
             <Controller
-              name="email"
+              name="correo"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -137,7 +153,7 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="phone"
+              name="telefono"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -155,7 +171,7 @@ const CreateUser = () => {
         {activeStep === 1 && (
           <Box display="flex" flexDirection="column">
             <Controller
-              name="nombreApellido"
+              name="nombre"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -168,14 +184,14 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="fechaNacimiento"
+              name="edad"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  type="date"
-                  label="Fecha de Nacimiento"
+                  type="number"
+                  label="Edad"
                   fullWidth
                   InputLabelProps={{ shrink: true }}
                   sx={{ marginBottom: 2 }}
@@ -183,7 +199,7 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="genero"
+              name="sexo"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -289,7 +305,6 @@ const CreateUser = () => {
 
         <Button
           type="submit"
-          alignSelf="center"
           variant="contained"
           color="primary"
           fullWidth
