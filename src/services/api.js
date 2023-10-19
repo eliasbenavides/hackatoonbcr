@@ -26,3 +26,7 @@ export const createUser = async (postData) => {
 export const getProfessions = async () => {
   return axiosInstance.get("/Profesion");
 };
+
+export const getLocations = async (id = 0) => {
+  return axiosInstance.get(`/Ubicacion/${id}`)
+}
