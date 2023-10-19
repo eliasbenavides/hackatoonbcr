@@ -4,14 +4,12 @@ const API_URL = "https://5932-190-113-115-107.ngrok-free.app"; // Add endpoint a
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json; charset=utf-8",
+    'ngrok-skip-browser-warning': 'asd'
+  },
 });
 
-const requestInterceptor = (config) => {
-  config.headers["Content-Type"] = "application/json";
-  return config;
-};
-
-axiosInstance.interceptors.request.use(requestInterceptor);
 
 export const getUsers = async () => {
   const { data } = await axiosInstance.get(
@@ -26,5 +24,5 @@ export const createUser = async (postData) => {
 };
 
 export const getProfessions = async () => {
-  return axiosInstance.get('/profesion')
-}
+  return axiosInstance.get("/Profesion");
+};
