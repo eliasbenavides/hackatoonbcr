@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CreateUser from "./layouts/CreateUser";
-import SearchUsers from "./layouts/SearchUsers";
-import Home from "./layouts/Home";
-import "./styles.css";
+import CreateUser from "./pages/CreateUser";
+import SearchUsers from "./pages/SearchUsers";
+import Home from "./pages/Home";
+
 function App() {
   return (
     <BrowserRouter>
