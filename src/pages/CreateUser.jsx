@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import {
   TextField,
@@ -15,8 +14,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import Layout from "../layouts/Layout";
-
+import { professions } from "../data-mock/professions";
 const CreateUser = () => {
   const { control, handleSubmit } = useForm();
   const onSubmit = (data) => {
@@ -27,8 +25,8 @@ const CreateUser = () => {
       <Typography alignSelf="flex-start" variant="subtitle1">
         Entrar al equipo
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)} style={{height: '90%'}}>
-        <Box height="100%" justifyContent='space-around'>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ height: "90%" }}>
+        <Box height="100%" justifyContent="space-around">
           <Controller
             name="nombreApellido"
             control={control}
@@ -47,6 +45,7 @@ const CreateUser = () => {
                 type="date"
                 label="Fecha de Nacimiento"
                 fullWidth
+                InputLabelProps={{ shrink: true }}
               />
             )}
           />
@@ -79,10 +78,13 @@ const CreateUser = () => {
             render={({ field }) => (
               <FormControl fullWidth>
                 <InputLabel>Profesion</InputLabel>
-                <Select {...field}>
-                  <MenuItem value="ingeniero">Ingeniero</MenuItem>
-                  <MenuItem value="medico">Médico</MenuItem>
-                  <MenuItem value="abogado">Abogado</MenuItem>
+                <Select label="Profesion" {...field}>
+                  {professions &&
+                    professions?.map(({ label, value }) => (
+                      <MenuItem key={value} value={value}>
+                        {label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             )}
@@ -115,13 +117,6 @@ const CreateUser = () => {
             Enviar
           </Button>
         </Box>
-        {/* <TextField label="Nombre completo" fullWidth />
-        <TextField label="Correo electronico" fullWidth />
-        <TextField label="Fecha de nacimiento" fullWidth />
-        <TextField label="Genero" fullWidth />
-        <TextField label="Telefono" fullWidth />
-        <TextField label="Profesion" fullWidth />
-        <TextField label="Direccion" fullWidth /> */}
       </form>
     </>
   );

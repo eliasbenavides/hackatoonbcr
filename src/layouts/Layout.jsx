@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 
-const GradientAppBar = styled(AppBar)(({ theme }) => ({
+const GradientAppBar = styled(AppBar)(() => ({
   background:
     "linear-gradient(180deg, rgba(162, 205, 250, 0.7) 0%, rgba(162, 205, 250, 0) 100%)",
   boxShadow: "none",
@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
           </Typography>
         </Toolbar>
       </GradientAppBar>
-      <Container component="main" sx={{height: '87vh'}}>
+      <Container component="main" sx={{ height: "87vh" }}>
         <Box alignItems="flex-start">
           <Typography variant="h6">Team Discovery</Typography>
         </Box>
