@@ -5,33 +5,42 @@ import {
   Container,
   CssBaseline,
   Box,
+  Avatar,
 } from "@mui/material";
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
 
 const GradientAppBar = styled(AppBar)(({ theme }) => ({
-  background: 'linear-gradient(180deg, rgba(162, 205, 250, 0.7) 0%, rgba(162, 205, 250, 0) 100%)',
+  background:
+    "linear-gradient(180deg, rgba(162, 205, 250, 0.7) 0%, rgba(162, 205, 250, 0) 100%)",
+  boxShadow: "none",
 }));
 
 // eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
-      
   return (
     <>
       <GradientAppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Team Discovery</Typography>
+          <Avatar
+            src="/BCR-LOGO-DARK.png"
+            alt="Logo"
+            sx={{ marginRight: 2, borderRadius: 0, minWidth: "91px" }}
+          />
+          <Typography variant="h5" color="black">
+            Horizonte
+          </Typography>
         </Toolbar>
       </GradientAppBar>
-      <Box textAlign="center">
-        <Typography variant="h4">Team Discovery</Typography>
-      </Box>
-      <Container component="main">
+      <Container component="main" sx={{height: '87vh'}}>
+        <Box alignItems="flex-start">
+          <Typography variant="h6">Team Discovery</Typography>
+        </Box>
         <CssBaseline />
         {children}
       </Container>
       <footer>
         <Typography variant="body2" align="center">
-          Made with ❤️ by BCR Horizonte
+          Made with ❤️ by BCR Horizonte Dev Team
         </Typography>
       </footer>
     </>
