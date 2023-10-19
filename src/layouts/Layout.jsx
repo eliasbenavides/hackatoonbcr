@@ -26,15 +26,9 @@ const Layout = ({ children }) => {
             alt="Logo"
             sx={{ marginRight: 2, borderRadius: 0, minWidth: "91px" }}
           />
-          <Typography variant="h5" color="black">
-            Horizonte
-          </Typography>
         </Toolbar>
       </GradientAppBar>
       <Container component="main" sx={{ height: "87vh" }}>
-        <Box alignItems="flex-start">
-          <Typography variant="h6">Team Discovery</Typography>
-        </Box>
         <CssBaseline />
         {children}
       </Container>
