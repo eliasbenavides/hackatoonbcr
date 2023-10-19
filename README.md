@@ -8,7 +8,9 @@ Este proyecto cuenta con las siguientes librerias ya instaladas
 -Material UI
 -React Router Dom
 -EsLint
-
+-Jest
+-Yup
+-Formik
 Para poder usar de manera correcta el proyecto, los pasos son los siguientes:
 
 1. npm install
