@@ -16,12 +16,16 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { professions } from "../data-mock/professions";
-import { getProfessions } from "../services/api";
+import { getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
 
 const CreateUser = () => {
   const { control, handleSubmit } = useForm();
+  const [professions, setProfessions] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [regions, setRegions] = useState([]);
+
+  const [proviceSelected, setProviceSelected] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = ["Contacto", "Informacion Personal", "Área de Trabajo"];
@@ -43,12 +47,57 @@ const CreateUser = () => {
 
   useEffect(() => {
     getProfessionsList();
+    getProvincesList();
   }, []);
+
+  useEffect(() => {
+    if (!proviceSelected) return;
+    getRegionsList();
+  }, [proviceSelected]);
 
   const getProfessionsList = async () => {
     try {
       const { data } = await getProfessions();
-      console.log(data);
+      setProfessions(
+        data?.detalle?.map(({ nombreProfesion, id }) => {
+          return {
+            label: nombreProfesion,
+            value: id,
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getProvincesList = async () => {
+    try {
+      const { data } = await getLocations(0);
+      setProvinces(
+        data?.detalle?.map(({ id, nombreUbicacion }) => {
+          return {
+            label: nombreUbicacion,
+            value: id,
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getRegionsList = async () => {
+    try {
+      const { data } = await getLocations(proviceSelected);
+      setRegions(
+        data?.detalle?.map(({ id, nombreUbicacion }) => {
+          return {
+            label: nombreUbicacion,
+            value: id,
+          };
+        })
+      );
     } catch (error) {
       console.log(error);
     }
@@ -164,53 +213,78 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="direccion"
+              name="idProvincia"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Direccion"
-                  type="number"
-                  fullWidth
-                />
+                <FormControl fullWidth>
+                  <InputLabel>Provincia</InputLabel>
+
+                  <Select
+                    label="Provincia"
+                    {...field}
+                    onChange={(e) => {
+                      setProviceSelected(e.target.value);
+
+                      field.onChange(e);
+                    }}
+                  >
+                    {provinces &&
+                      provinces?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
               )}
             />
             <Controller
-              name="direccion"
+              name="idCanton"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Direccion"
-                  type="number"
-                  fullWidth
-                  sx={{ marginBottom: 2 }}
-                />
+                <FormControl fullWidth>
+                  <InputLabel>Canton</InputLabel>
+
+                  <Select
+                    disabled={proviceSelected ? false : true}
+                    label="Canton"
+                    {...field}
+                  >
+                    {regions &&
+                      regions?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
               )}
             />
           </Box>
         )}
         {activeStep === 2 && (
-          <Controller
-            name="profesion"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                <InputLabel>Profesion</InputLabel>
-                <Select label="Profesion" {...field}>
-                  {professions &&
-                    professions?.map(({ label, value }) => (
-                      <MenuItem key={value} value={value}>
-                        {label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            )}
-          />
+          <Box>
+            <Controller
+              name="idProfesion"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel>Profesion</InputLabel>
+                  <Select label="Profesion" {...field}>
+                    {professions &&
+                      professions?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+          </Box>
         )}
 
         <Button
@@ -223,9 +297,7 @@ const CreateUser = () => {
             width: "100%",
           }}
         >
-          {
-            activeStep === 0 || activeStep === 1 ? 'Continuar' : 'Unirme'
-          }
+          {activeStep === 0 || activeStep === 1 ? "Continuar" : "Unirme"}
         </Button>
       </form>
     </>
