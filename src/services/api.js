@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 export const getUsers = async () => {
   const { data } = await axiosInstance.get(
-    "/Usuario/%22/%22/%22/%22/%22?filtro=%22"
+    "/Usuario/%27%27"
   );
   return data;
 };
