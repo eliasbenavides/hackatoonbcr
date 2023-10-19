@@ -1,4 +1,3 @@
-import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CreateUser from "./layouts/CreateUser";
 import SearchUsers from "./layouts/SearchUsers";
