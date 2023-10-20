@@ -18,9 +18,14 @@ import {
 } from "@mui/material";
 import { getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
+import { DevTool } from "@hookform/devtools";
 
 const CreateUser = () => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [professions, setProfessions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -119,13 +124,24 @@ const CreateUser = () => {
           </Step>
         ))}
       </Stepper>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ height: "70%" }}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          height: "67%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         {activeStep === 0 && (
           <Box display="flex" flexDirection="column">
             <Controller
               name="email"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -133,6 +149,8 @@ const CreateUser = () => {
                   type="email"
                   fullWidth
                   sx={{ marginBottom: 2 }}
+                  error={!!errors.email}
+                  helperText={errors.email && errors.email.message}
                 />
               )}
             />
@@ -140,6 +158,11 @@ const CreateUser = () => {
               name="phone"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+                maxLength: {message: 'No puede ser mayor a 8 digitos', value: 8},
+                minLength: 8,
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -147,6 +170,8 @@ const CreateUser = () => {
                   type="number"
                   fullWidth
                   sx={{ marginBottom: 2 }}
+                  error={!!errors.phone}
+                  helperText={errors.phone && errors.phone.message}
                 />
               )}
             />
@@ -217,7 +242,7 @@ const CreateUser = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
                   <InputLabel>Provincia</InputLabel>
 
                   <Select
@@ -244,7 +269,7 @@ const CreateUser = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
                   <InputLabel>Canton</InputLabel>
 
                   <Select
@@ -289,7 +314,6 @@ const CreateUser = () => {
 
         <Button
           type="submit"
-          alignSelf="center"
           variant="contained"
           color="primary"
           fullWidth
