@@ -155,7 +155,12 @@ const CreateUser = () => {
         text={alertValue.text}
         alertType={alertValue.type}
       />
-      <Typography alignSelf="center" textAlign="center" variant="h5" marginBottom={2}>
+      <Typography
+        alignSelf="center"
+        textAlign="center"
+        variant="h5"
+        marginBottom={2}
+      >
         Unete a Nuestro Equipo Digital
       </Typography>
       <Stepper
@@ -197,7 +202,7 @@ const CreateUser = () => {
                   label="Correo"
                   type="text"
                   inputMode="email"
-                  inputProps={{ inputMode: 'email' }}
+                  inputProps={{ inputMode: "email" }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.correo}
@@ -226,7 +231,7 @@ const CreateUser = () => {
                   label="Teléfono"
                   type="tel"
                   inputMode="tel"
-                  inputProps={{ inputMode: 'tel', maxLength: 8 }}
+                  inputProps={{ inputMode: "tel", maxLength: 8 }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.telefono}
@@ -262,16 +267,24 @@ const CreateUser = () => {
               defaultValue=""
               rules={{
                 required: "Este campo es requerido",
-                max: {message: "No puede ser mayor de 120 años", value: 120},
-                maxLength: {message: "No puede tener mas de 3 digitos", value: 3}
+                min: {
+                  message: "No puede ser menor a 0",
+                  value: 1,
+                },
+                max: { message: "No puede ser mayor de 120 años", value: 120 },
+                maxLength: {
+                  message: "No puede tener mas de 3 digitos",
+                  value: 3,
+                },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Edad"
+                  min={1}
                   inputMode="numeric"
                   max={120}
-                  inputProps={{ inputMode: 'numeric', maxLength: 3 }}
+                  inputProps={{ inputMode: "numeric", maxLength: 3 }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.edad}
