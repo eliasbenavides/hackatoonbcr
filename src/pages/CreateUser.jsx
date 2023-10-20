@@ -15,6 +15,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  FormHelperText
 } from "@mui/material";
 import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
@@ -172,7 +173,7 @@ const CreateUser = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{
-          height: "67%",
+          minHeight: "67%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -195,7 +196,7 @@ const CreateUser = () => {
                 <TextField
                   {...field}
                   label="Correo"
-                  type="email"
+                  type="text"
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.correo}
@@ -256,6 +257,9 @@ const CreateUser = () => {
               name="edad"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -273,6 +277,9 @@ const CreateUser = () => {
               name="sexo"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Debe seleccionar una opcion",
+              }}
               render={({ field }) => (
                 <FormControl
                   fullWidth
@@ -300,6 +307,9 @@ const CreateUser = () => {
                       label="Otro"
                     />
                   </RadioGroup>
+                  {errors.sexo && (
+                    <FormHelperText>{errors.sexo.message}</FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
