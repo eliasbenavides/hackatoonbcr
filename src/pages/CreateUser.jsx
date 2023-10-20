@@ -16,11 +16,13 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { getLocations, getProfessions } from "../services/api";
+import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
-import { DevTool } from "@hookform/devtools";
+import { useNavigate } from "react-router";
+import Alert from "../components/Alert";
 
 const CreateUser = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -29,6 +31,12 @@ const CreateUser = () => {
   const [professions, setProfessions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [regions, setRegions] = useState([]);
+
+  const [alertValue, setAlertValue] = useState({
+    type: "success",
+    text: "",
+    show: false,
+  });
 
   const [proviceSelected, setProviceSelected] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -42,11 +50,26 @@ const CreateUser = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (dataValues) => {
     if (activeStep < steps.length - 1) {
       handleNext();
     } else {
-      console.log(data); // Realizar acción con los datos finales
+      // Realizar acción con los datos finales
+      const body = {
+        ...dataValues,
+        edad: +dataValues.edad,
+      };
+      try {
+        await createUser(body);
+        navigate("/");
+      } catch (error) {
+        setAlertValue((prev) => ({
+          ...prev,
+          type: "error",
+          text: "No se pudo crear el usuario",
+          show: true,
+        }));
+      }
     }
   };
 
@@ -72,7 +95,12 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de profesiones",
+        show: true,
+      }));
     }
   };
 
@@ -88,7 +116,12 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de provincias",
+        show: true,
+      }));
     }
   };
 
@@ -104,12 +137,23 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de cantones",
+        show: true,
+      }));
     }
   };
 
   return (
     <>
+      <Alert
+        isActive={alertValue.show}
+        handleClose={() => setAlertValue((prev) => ({ ...prev, show: false }))}
+        text={alertValue.text}
+        alertType={alertValue.type}
+      />
       <Typography alignSelf="flex-start" variant="h4">
         Unete a nuestro Equipo Digital
       </Typography>
@@ -136,7 +180,7 @@ const CreateUser = () => {
         {activeStep === 0 && (
           <Box display="flex" flexDirection="column">
             <Controller
-              name="email"
+              name="correo"
               control={control}
               defaultValue=""
               rules={{
@@ -155,7 +199,7 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="phone"
+              name="telefono"
               control={control}
               defaultValue=""
               rules={{
@@ -180,7 +224,7 @@ const CreateUser = () => {
         {activeStep === 1 && (
           <Box display="flex" flexDirection="column">
             <Controller
-              name="nombreApellido"
+              name="nombre"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -193,14 +237,14 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="fechaNacimiento"
+              name="edad"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
-                  type="date"
-                  label="Fecha de Nacimiento"
+                  type="number"
+                  label="Edad"
                   fullWidth
                   InputLabelProps={{ shrink: true }}
                   sx={{ marginBottom: 2 }}
@@ -208,7 +252,7 @@ const CreateUser = () => {
               )}
             />
             <Controller
-              name="genero"
+              name="sexo"
               control={control}
               defaultValue=""
               render={({ field }) => (

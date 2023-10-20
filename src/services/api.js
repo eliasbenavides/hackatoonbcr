@@ -6,10 +6,9 @@ const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json; charset=utf-8",
-    'ngrok-skip-browser-warning': 'asd'
+    "ngrok-skip-browser-warning": "asd",
   },
 });
-
 
 export const getUsers = async () => {
   const { data } = await axiosInstance.get(
@@ -19,8 +18,7 @@ export const getUsers = async () => {
 };
 
 export const createUser = async (postData) => {
-  const { data } = await axiosInstance.post("/posts", postData);
-  return data;
+  return axiosInstance.post("/Usuario", postData);
 };
 
 export const getProfessions = async () => {
@@ -28,5 +26,5 @@ export const getProfessions = async () => {
 };
 
 export const getLocations = async (id = 0) => {
-  return axiosInstance.get(`/Ubicacion/${id}`)
-}
+  return axiosInstance.get(`/Ubicacion/${id}`);
+};
