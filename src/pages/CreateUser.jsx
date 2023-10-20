@@ -53,11 +53,7 @@ const CreateUser = () => {
       // Realizar acción con los datos finales
       const body = {
         ...dataValues,
-        idCanton: +dataValues?.idCanton,
-        idProfesion: +dataValues?.idProfesion,
-        idProvincia: +dataValues?.idProvincia,
         edad: +dataValues.edad,
-        id: 1,
       };
       try {
         await createUser(body);
