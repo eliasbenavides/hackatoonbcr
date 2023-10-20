@@ -19,6 +19,7 @@ import {
 import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import Alert from "../components/Alert";
 
 const CreateUser = () => {
   const navigate = useNavigate();
@@ -26,6 +27,12 @@ const CreateUser = () => {
   const [professions, setProfessions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [regions, setRegions] = useState([]);
+
+  const [alertValue, setAlertValue] = useState({
+    type: "success",
+    text: "",
+    show: false,
+  });
 
   const [proviceSelected, setProviceSelected] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -56,7 +63,12 @@ const CreateUser = () => {
         await createUser(body);
         navigate("/");
       } catch (error) {
-        console.log(error);
+        setAlertValue((prev) => ({
+          ...prev,
+          type: "error",
+          text: "No se pudo obtener crear el usuario",
+          show: true,
+        }));
       }
     }
   };
@@ -83,7 +95,12 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de profesiones",
+        show: true,
+      }));
     }
   };
 
@@ -99,7 +116,12 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de provincias",
+        show: true,
+      }));
     }
   };
 
@@ -115,12 +137,23 @@ const CreateUser = () => {
         })
       );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de cantones",
+        show: true,
+      }));
     }
   };
 
   return (
     <>
+      <Alert
+        isActive={alertValue.show}
+        handleClose={() => setAlertValue((prev) => ({ ...prev, show: false }))}
+        text={alertValue.text}
+        alertType={alertValue.type}
+      />
       <Typography alignSelf="flex-start" variant="h4">
         Unete a nuestro Equipo Digital
       </Typography>
