@@ -1,7 +1,8 @@
-.content-filter {
-  margin: 50px;
+.table-content {
+  display: block !important;
+  overflow-x: scroll;
+  margin-top: 10px;
 }
-
-.button-box-filter {
-  margin-bottom: 10px;
+.MuiBox-root {
+  display: block;
 }

@@ -9,14 +9,20 @@ const SearchUsers = () => {
   const [tableData, setTableData] = useState([]);
 
   const columns = [
-    { field: "nombre", headerName: "Nombre", width: 200 },
-    { field: "correo", headerName: "Correo", width: 200 },
-    { field: "edad", headerName: "Edad", width: 150 },
-    { field: "sexo", headerName: "Sexo", width: 150 },
-    { field: "telefono", headerName: "Teléfono", width: 200 },
-    { field: "profesion", headerName: "Profesión", width: 200 },
-    { field: "provincia", headerName: "Provincia", width: 200 },
-    { field: "canton", headerName: "Cantón", width: 200 },
+    { field: "nombre", headerName: "Nombre", width: 150 },
+    { field: "correo", headerName: "Correo", width: 120 },
+    { field: "edad", headerName: "Edad", width: 110 },
+    { field: "sexo", headerName: "Sexo", width: 110 },
+    { field: "telefono", headerName: "Teléfono", width: 130 },
+    { field: "profesion", headerName: "Profesión", width: 130 },
+    {
+      field: "ubicacion",
+      headerName: "Ubicación",
+      width: 150,
+      valueGetter: (params) => {
+        return `${params.row.provincia}, ${params.row.canton}`;
+      },
+    },
   ];
 
   useEffect(() => {
@@ -41,28 +47,30 @@ const SearchUsers = () => {
             variant="contained"
             color="primary"
             size="medium"
-            hovered="medium"
+            hovered="large"
           >
             Inicio
           </Button>
         </Link>
       </div>
 
-      <Box sx={{ height: "80vh", width: "100%" }}>
-        <DataGrid
-          rows={tableData}
-          getRowId={(row) => row.telefono}
-          columns={columns}
-          sx={{
-            boxShadow: 2,
-            border: 2,
-            borderColor: "primary.light",
-            "& .MuiDataGrid-cell:hover": {
-              color: "primary.main",
-            },
-          }}
-        />
-      </Box>
+      <div>
+        <Box sx={{ height: "80vh", width: "100%" }} className="table-content">
+          <DataGrid
+            rows={tableData}
+            getRowId={(row) => row.telefono}
+            columns={columns}
+            sx={{
+              boxShadow: 2,
+              border: 2,
+              borderColor: "primary.light",
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+              },
+            }}
+          />
+        </Box>
+      </div>
     </div>
   );
 };
