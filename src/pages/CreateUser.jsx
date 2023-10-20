@@ -155,13 +155,13 @@ const CreateUser = () => {
         text={alertValue.text}
         alertType={alertValue.type}
       />
-      <Typography alignSelf="flex-start" variant="h4">
-        Unete a nuestro Equipo Digital
+      <Typography alignSelf="center" textAlign="center" variant="h5" marginBottom={2}>
+        Unete a Nuestro Equipo Digital
       </Typography>
       <Stepper
         activeStep={activeStep}
         alternativeLabel
-        sx={{ marginBottom: 3 }}
+        sx={{ marginBottom: 1 }}
       >
         {steps.map((label) => (
           <Step key={label}>
@@ -196,6 +196,8 @@ const CreateUser = () => {
                   {...field}
                   label="Correo"
                   type="text"
+                  inputMode="email"
+                  inputProps={{ inputMode: 'email' }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.correo}
@@ -222,7 +224,9 @@ const CreateUser = () => {
                 <TextField
                   {...field}
                   label="Teléfono"
-                  type="number"
+                  type="tel"
+                  inputMode="tel"
+                  inputProps={{ inputMode: 'tel', maxLength: 8 }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.telefono}
@@ -258,14 +262,17 @@ const CreateUser = () => {
               defaultValue=""
               rules={{
                 required: "Este campo es requerido",
+                max: {message: "No puede ser mayor de 120 años", value: 120},
+                maxLength: {message: "No puede tener mas de 3 digitos", value: 3}
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  type="number"
                   label="Edad"
+                  inputMode="numeric"
+                  max={120}
+                  inputProps={{ inputMode: 'numeric', maxLength: 3 }}
                   fullWidth
-                  InputLabelProps={{ shrink: true }}
                   sx={{ marginBottom: 2 }}
                   error={!!errors.edad}
                   helperText={errors.edad && errors.edad.message}

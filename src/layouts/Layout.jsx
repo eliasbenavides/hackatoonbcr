@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
     <>
       <GradientAppBar position="static">
         <Toolbar>
-          <IconButton onClick={() => navigate("/")}>
+          <IconButton onClick={() => navigate("/")} style={{borderRadius: 0}} disableRipple>
             <Avatar
               src="/BCR-LOGO-DARK.png"
               alt="Logo"
