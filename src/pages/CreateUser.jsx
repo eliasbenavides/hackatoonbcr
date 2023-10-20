@@ -12,127 +12,457 @@ import {
   InputLabel,
   Typography,
   Box,
+  Stepper,
+  Step,
+  StepLabel,
+  FormHelperText,
 } from "@mui/material";
-import { professions } from "../data-mock/professions";
-import { getProfessions } from "../services/api";
-import { useEffect } from "react";
-
+import { createUser, getLocations, getProfessions } from "../services/api";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import Alert from "../components/Alert";
 const CreateUser = () => {
-  const { control, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [professions, setProfessions] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [regions, setRegions] = useState([]);
+
+  const [alertValue, setAlertValue] = useState({
+    type: "success",
+    text: "",
+    show: false,
+  });
+
+  const [proviceSelected, setProviceSelected] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = ["Contacto", "Informacion Personal", "Área de Trabajo"];
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const onSubmit = async (dataValues) => {
+    if (activeStep < steps.length - 1) {
+      handleNext();
+    } else {
+      // Realizar acción con los datos finales
+      const body = {
+        ...dataValues,
+        edad: +dataValues.edad,
+      };
+      try {
+        await createUser(body);
+        navigate("/");
+      } catch (error) {
+        setAlertValue((prev) => ({
+          ...prev,
+          type: "error",
+          text: "No se pudo crear el usuario",
+          show: true,
+        }));
+      }
+    }
+  };
 
   useEffect(() => {
     getProfessionsList();
+    getProvincesList();
   }, []);
+
+  useEffect(() => {
+    if (!proviceSelected) return;
+    getRegionsList();
+  }, [proviceSelected]);
 
   const getProfessionsList = async () => {
     try {
       const { data } = await getProfessions();
-      console.log(data);
+      setProfessions(
+        data?.detalle?.map(({ nombreProfesion, id }) => {
+          return {
+            label: nombreProfesion,
+            value: id,
+          };
+        })
+      );
     } catch (error) {
-      console.log(error);
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de profesiones",
+        show: true,
+      }));
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const validationIsNumber = (value) => {
+    if (/^\d+$/.test(value)) {
+      return true;
+    }
+    return "Ingresa solo números";
+  }
+
+  const getProvincesList = async () => {
+    try {
+      const { data } = await getLocations(0);
+      setProvinces(
+        data?.detalle?.map(({ id, nombreUbicacion }) => {
+          return {
+            label: nombreUbicacion,
+            value: id,
+          };
+        })
+      );
+    } catch (error) {
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de provincias",
+        show: true,
+      }));
+    }
   };
+
+  const getRegionsList = async () => {
+    try {
+      const { data } = await getLocations(proviceSelected);
+      setRegions(
+        data?.detalle?.map(({ id, nombreUbicacion }) => {
+          return {
+            label: nombreUbicacion,
+            value: id,
+          };
+        })
+      );
+    } catch (error) {
+      setAlertValue((prev) => ({
+        ...prev,
+        type: "error",
+        text: "No se pudo obtener el listado de cantones",
+        show: true,
+      }));
+    }
+  };
+
   return (
     <>
-      <Typography alignSelf="flex-start" variant="subtitle1">
-        Entrar al equipo
+      <Alert
+        isActive={alertValue.show}
+        handleClose={() => setAlertValue((prev) => ({ ...prev, show: false }))}
+        text={alertValue.text}
+        alertType={alertValue.type}
+      />
+      <Typography
+        alignSelf="center"
+        textAlign="center"
+        variant="h5"
+        marginBottom={2}
+      >
+        Unete a Nuestro Equipo Digital
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ height: "90%" }}>
-        <Box height="100%" justifyContent="space-around">
-          <Controller
-            name="nombreApellido"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} label="Nombre y Apellido" fullWidth />
-            )}
-          />
-          <Controller
-            name="fechaNacimiento"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                type="date"
-                label="Fecha de Nacimiento"
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            )}
-          />
-          <Controller
-            name="genero"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <FormLabel>Genero</FormLabel>
-                <RadioGroup {...field}>
-                  <FormControlLabel
-                    value="masculino"
-                    control={<Radio />}
-                    label="Masculino"
-                  />
-                  <FormControlLabel
-                    value="femenino"
-                    control={<Radio />}
-                    label="Femenino"
-                  />
-                </RadioGroup>
-              </FormControl>
-            )}
-          />
-          <Controller
-            name="profesion"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel>Profesion</InputLabel>
-                <Select label="Profesion" {...field}>
-                  {professions &&
-                    professions?.map(({ label, value }) => (
-                      <MenuItem key={value} value={value}>
-                        {label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-          <Controller
-            name="email"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} label="Email" type="email" fullWidth />
-            )}
-          />
-          <Controller
-            name="telefono"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} label="Teléfono" type="number" fullWidth />
-            )}
-          />
-          <Controller
-            name="direccion"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} label="Direccion" type="number" fullWidth />
-            )}
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Enviar
-          </Button>
-        </Box>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        sx={{ marginBottom: 1 }}
+      >
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          minHeight: "67%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        {activeStep === 0 && (
+          <Box display="flex" flexDirection="column">
+            <Controller
+              name="correo"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Ingrese un correo electrónico válido",
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Correo"
+                  type="text"
+                  inputMode="email"
+                  inputProps={{ inputMode: "email" }}
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  error={!!errors.correo}
+                  helperText={errors.correo && errors.correo.message}
+                />
+              )}
+            />
+            <Controller
+              name="telefono"
+              control={control}
+              defaultValue=""
+              rules={{
+                validate: validationIsNumber,
+                required: "Este campo es requerido",
+                maxLength: {
+                  message: "No puede ser mayor a 8 digitos",
+                  value: 8,
+                },
+                minLength: {
+                  message: "No puede ser menor a 8 digitos",
+                  value: 8,
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Teléfono"
+                  type="tel"
+                  inputMode="tel"
+                  inputProps={{ inputMode: "tel", maxLength: 8, }}
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  error={!!errors.telefono}
+                  helperText={errors.telefono && errors.telefono.message}
+                />
+              )}
+            />
+          </Box>
+        )}
+        {activeStep === 1 && (
+          <Box display="flex" flexDirection="column">
+            <Controller
+              name="nombre"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Nombre y Apellido"
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  error={!!errors.nombre}
+                  helperText={errors.nombre && errors.nombre.message}
+                />
+              )}
+            />
+            <Controller
+              name="edad"
+              control={control}
+              defaultValue=""
+              rules={{
+                validate: validationIsNumber,
+                required: "Este campo es requerido",
+                min: {
+                  message: "No puede ser menor a 12",
+                  value: 12,
+                },
+                max: { message: "No puede ser mayor de 120 años", value: 120 },
+                maxLength: {
+                  message: "No puede tener mas de 3 digitos",
+                  value: 3,
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Edad"
+                  min={1}
+                  inputMode="numeric"
+                  max={120}
+                  inputProps={{ inputMode: "numeric", maxLength: 3 }}
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  error={!!errors.edad}
+                  helperText={errors.edad && errors.edad.message}
+                />
+              )}
+            />
+            <Controller
+              name="sexo"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Debe seleccionar una opcion",
+              }}
+              render={({ field }) => (
+                <FormControl
+                  fullWidth
+                  error={!!errors.sexo}
+                  helperText={errors.sexo && errors.sexo.message}
+                >
+                  <FormLabel>Genero</FormLabel>
+                  <RadioGroup
+                    {...field}
+                    style={{ display: "flex", flexDirection: "row" }}
+                  >
+                    <FormControlLabel
+                      value="masculino"
+                      control={<Radio />}
+                      label="Masculino"
+                    />
+                    <FormControlLabel
+                      value="femenino"
+                      control={<Radio />}
+                      label="Femenino"
+                    />
+                    <FormControlLabel
+                      value="otro"
+                      control={<Radio />}
+                      label="Otro"
+                    />
+                  </RadioGroup>
+                  {errors.sexo && (
+                    <FormHelperText>{errors.sexo.message}</FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+            <Controller
+              name="idProvincia"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
+              render={({ field }) => (
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel>Provincia</InputLabel>
+
+                  <Select
+                    label="Provincia"
+                    error={!!errors.idProvincia}
+                    helperText={
+                      errors.idProvincia && errors.idProvincia.message
+                    }
+                    {...field}
+                    onChange={(e) => {
+                      setProviceSelected(e.target.value);
+                      field.onChange(e);
+                    }}
+                  >
+                    {provinces &&
+                      provinces?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {errors.idProvincia && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+            <Controller
+              name="idCanton"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
+              render={({ field }) => (
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel>Canton</InputLabel>
+                  <Select
+                    disabled={proviceSelected ? false : true}
+                    label="Canton"
+                    error={!!errors.idCanton}
+                    helperText={errors.idCanton && errors.idCanton.message}
+                    {...field}
+                  >
+                    {regions &&
+                      regions?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {errors.idCanton && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Box>
+        )}
+        {activeStep === 2 && (
+          <Box>
+            <Controller
+              name="idProfesion"
+              control={control}
+              rules={{
+                required: "Este campo es requerido",
+              }}
+              helperText={errors.idProfesion && errors.idProfesion.message}
+              defaultValue=""
+              render={({ field }) => (
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel>Profesion</InputLabel>
+                  <Select
+                    label="Profesion"
+                    {...field}
+                    error={!!errors.idProfesion}
+                    helperText={
+                      errors.idProfesion && errors.idProfesion.message
+                    }
+                  >
+                    {professions &&
+                      professions?.map(({ label, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {errors.idProfesion && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Box>
+        )}
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{
+            width: "100%",
+          }}
+        >
+          {activeStep === 0 || activeStep === 1 ? "Continuar" : "Unirme"}
+        </Button>
       </form>
     </>
   );
