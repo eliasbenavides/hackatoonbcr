@@ -28,6 +28,7 @@ const CreateUser = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [professions, setProfessions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -185,16 +186,20 @@ const CreateUser = () => {
               defaultValue=""
               rules={{
                 required: "Este campo es requerido",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: "Ingrese un correo electrónico válido",
+                },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Email"
+                  label="Correo"
                   type="email"
                   fullWidth
                   sx={{ marginBottom: 2 }}
-                  error={!!errors.email}
-                  helperText={errors.email && errors.email.message}
+                  error={!!errors.correo}
+                  helperText={errors.correo && errors.correo.message}
                 />
               )}
             />
@@ -204,8 +209,14 @@ const CreateUser = () => {
               defaultValue=""
               rules={{
                 required: "Este campo es requerido",
-                maxLength: {message: 'No puede ser mayor a 8 digitos', value: 8},
-                minLength: 8,
+                maxLength: {
+                  message: "No puede ser mayor a 8 digitos",
+                  value: 8,
+                },
+                minLength: {
+                  message: "No puede ser menor a 8 digitos",
+                  value: 8,
+                },
               }}
               render={({ field }) => (
                 <TextField
@@ -214,8 +225,8 @@ const CreateUser = () => {
                   type="number"
                   fullWidth
                   sx={{ marginBottom: 2 }}
-                  error={!!errors.phone}
-                  helperText={errors.phone && errors.phone.message}
+                  error={!!errors.telefono}
+                  helperText={errors.telefono && errors.telefono.message}
                 />
               )}
             />
@@ -227,12 +238,17 @@ const CreateUser = () => {
               name="nombre"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Nombre y Apellido"
                   fullWidth
                   sx={{ marginBottom: 2 }}
+                  error={!!errors.nombre}
+                  helperText={errors.nombre && errors.nombre.message}
                 />
               )}
             />
@@ -248,6 +264,8 @@ const CreateUser = () => {
                   fullWidth
                   InputLabelProps={{ shrink: true }}
                   sx={{ marginBottom: 2 }}
+                  error={!!errors.edad}
+                  helperText={errors.edad && errors.edad.message}
                 />
               )}
             />
@@ -256,7 +274,11 @@ const CreateUser = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <FormControl fullWidth>
+                <FormControl
+                  fullWidth
+                  error={!!errors.sexo}
+                  helperText={errors.sexo && errors.sexo.message}
+                >
                   <FormLabel>Genero</FormLabel>
                   <RadioGroup
                     {...field}
