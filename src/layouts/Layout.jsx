@@ -6,7 +6,9 @@ import {
   CssBaseline,
   Box,
   Avatar,
+  IconButton,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/system";
 
 const GradientAppBar = styled(AppBar)(() => ({
@@ -17,15 +19,18 @@ const GradientAppBar = styled(AppBar)(() => ({
 
 // eslint-disable-next-line react/prop-types
 const Layout = ({ children }) => {
+  const navigate = useNavigate();
   return (
     <>
       <GradientAppBar position="static">
         <Toolbar>
-          <Avatar
-            src="/BCR-LOGO-DARK.png"
-            alt="Logo"
-            sx={{ marginRight: 2, borderRadius: 0, minWidth: "91px" }}
-          />
+          <IconButton onClick={() => navigate("/")}>
+            <Avatar
+              src="/BCR-LOGO-DARK.png"
+              alt="Logo"
+              sx={{ marginRight: 2, borderRadius: 0, minWidth: "91px" }}
+            />
+          </IconButton>
         </Toolbar>
       </GradientAppBar>
       <Container component="main" sx={{ height: "87vh" }}>

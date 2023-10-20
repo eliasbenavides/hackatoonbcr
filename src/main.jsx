@@ -5,8 +5,6 @@ import Layout from "./layouts/Layout.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Layout>
-      <App />
-    </Layout>
+    <App />
   </React.StrictMode>
 );
