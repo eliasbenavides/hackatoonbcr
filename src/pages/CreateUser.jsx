@@ -66,7 +66,7 @@ const CreateUser = () => {
         setAlertValue((prev) => ({
           ...prev,
           type: "error",
-          text: "No se pudo obtener crear el usuario",
+          text: "No se pudo crear el usuario",
           show: true,
         }));
       }
