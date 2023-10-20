@@ -105,6 +105,13 @@ const CreateUser = () => {
     }
   };
 
+  const validationIsNumber = (value) => {
+    if (/^\d+$/.test(value)) {
+      return true;
+    }
+    return "Ingresa solo números";
+  }
+
   const getProvincesList = async () => {
     try {
       const { data } = await getLocations(0);
@@ -215,6 +222,7 @@ const CreateUser = () => {
               control={control}
               defaultValue=""
               rules={{
+                validate: validationIsNumber,
                 required: "Este campo es requerido",
                 maxLength: {
                   message: "No puede ser mayor a 8 digitos",
@@ -231,7 +239,7 @@ const CreateUser = () => {
                   label="Teléfono"
                   type="tel"
                   inputMode="tel"
-                  inputProps={{ inputMode: "tel", maxLength: 8 }}
+                  inputProps={{ inputMode: "tel", maxLength: 8, }}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                   error={!!errors.telefono}
@@ -266,10 +274,11 @@ const CreateUser = () => {
               control={control}
               defaultValue=""
               rules={{
+                validate: validationIsNumber,
                 required: "Este campo es requerido",
                 min: {
-                  message: "No puede ser menor a 0",
-                  value: 1,
+                  message: "No puede ser menor a 12",
+                  value: 12,
                 },
                 max: { message: "No puede ser mayor de 120 años", value: 120 },
                 maxLength: {

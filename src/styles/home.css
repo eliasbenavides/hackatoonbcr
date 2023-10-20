@@ -5,7 +5,7 @@
   flex-direction: column;
 }
 .content {
-  height: 90vh;
+  height: 100%;
 }
 
 .button-box {

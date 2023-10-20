@@ -21,10 +21,23 @@ const GradientAppBar = styled(AppBar)(() => ({
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   return (
-    <>
+    <Container
+      sx={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        display: "flex",
+        flexDirection: "column",
+        padding: 0,
+      }}
+    >
       <GradientAppBar position="static">
         <Toolbar>
-          <IconButton onClick={() => navigate("/")} style={{borderRadius: 0}} disableRipple>
+          <IconButton
+            onClick={() => navigate("/")}
+            style={{ borderRadius: 0 }}
+            disableRipple
+          >
             <Avatar
               src="/BCR-LOGO-DARK.png"
               alt="Logo"
@@ -33,16 +46,33 @@ const Layout = ({ children }) => {
           </IconButton>
         </Toolbar>
       </GradientAppBar>
-      <Container component="main" sx={{ height: "87vh" }}>
+      <Container
+        component="main"
+        sx={{
+          flex: 1,
+          maxWidth: "800px",
+          position: "relative",
+          flexDirection: "column",
+          display: "flex",
+        }}
+        maxWidth="800px"
+      >
         <CssBaseline />
         {children}
       </Container>
-      <footer>
+      <footer
+        style={{
+          minHeight: 30,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <Typography variant="body2" align="center">
           Made with ❤️ by BCR Horizonte Dev Team
         </Typography>
       </footer>
-    </>
+    </Container>
   );
 };
 
