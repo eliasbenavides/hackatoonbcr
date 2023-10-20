@@ -258,14 +258,22 @@ const CreateUser = () => {
               defaultValue=""
               rules={{
                 required: "Este campo es requerido",
+                max: {
+                  message: "No puede ser mayor a 100 ",
+                  value: 99,
+                },
+                min: {
+                  message: "No puede ser menor a 0",
+                  value: 1,
+                },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  type="number"
                   label="Edad"
+                  type="number"
+                  min={1}
                   fullWidth
-                  InputLabelProps={{ shrink: true }}
                   sx={{ marginBottom: 2 }}
                   error={!!errors.edad}
                   helperText={errors.edad && errors.edad.message}
