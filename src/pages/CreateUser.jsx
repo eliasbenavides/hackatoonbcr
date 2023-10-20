@@ -15,13 +15,12 @@ import {
   Stepper,
   Step,
   StepLabel,
-  FormHelperText
+  FormHelperText,
 } from "@mui/material";
 import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Alert from "../components/Alert";
-import FormHelperText from "@mui/material/FormHelperText";
 const CreateUser = () => {
   const navigate = useNavigate();
   const {
