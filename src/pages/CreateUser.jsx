@@ -20,7 +20,7 @@ import { createUser, getLocations, getProfessions } from "../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Alert from "../components/Alert";
-
+import FormHelperText from "@mui/material/FormHelperText";
 const CreateUser = () => {
   const navigate = useNavigate();
   const {
@@ -307,16 +307,22 @@ const CreateUser = () => {
               name="idProvincia"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
               render={({ field }) => (
                 <FormControl fullWidth sx={{ marginBottom: 2 }}>
                   <InputLabel>Provincia</InputLabel>
 
                   <Select
                     label="Provincia"
+                    error={!!errors.idProvincia}
+                    helperText={
+                      errors.idProvincia && errors.idProvincia.message
+                    }
                     {...field}
                     onChange={(e) => {
                       setProviceSelected(e.target.value);
-
                       field.onChange(e);
                     }}
                   >
@@ -327,6 +333,11 @@ const CreateUser = () => {
                         </MenuItem>
                       ))}
                   </Select>
+                  {errors.idProvincia && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
@@ -334,13 +345,17 @@ const CreateUser = () => {
               name="idCanton"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Este campo es requerido",
+              }}
               render={({ field }) => (
                 <FormControl fullWidth sx={{ marginBottom: 2 }}>
                   <InputLabel>Canton</InputLabel>
-
                   <Select
                     disabled={proviceSelected ? false : true}
                     label="Canton"
+                    error={!!errors.idCanton}
+                    helperText={errors.idCanton && errors.idCanton.message}
                     {...field}
                   >
                     {regions &&
@@ -350,6 +365,11 @@ const CreateUser = () => {
                         </MenuItem>
                       ))}
                   </Select>
+                  {errors.idCanton && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
@@ -360,11 +380,22 @@ const CreateUser = () => {
             <Controller
               name="idProfesion"
               control={control}
+              rules={{
+                required: "Este campo es requerido",
+              }}
+              helperText={errors.idProfesion && errors.idProfesion.message}
               defaultValue=""
               render={({ field }) => (
                 <FormControl fullWidth sx={{ marginBottom: 2 }}>
                   <InputLabel>Profesion</InputLabel>
-                  <Select label="Profesion" {...field}>
+                  <Select
+                    label="Profesion"
+                    {...field}
+                    error={!!errors.idProfesion}
+                    helperText={
+                      errors.idProfesion && errors.idProfesion.message
+                    }
+                  >
                     {professions &&
                       professions?.map(({ label, value }, index) => (
                         <MenuItem key={index} value={value}>
@@ -372,6 +403,11 @@ const CreateUser = () => {
                         </MenuItem>
                       ))}
                   </Select>
+                  {errors.idProfesion && (
+                    <FormHelperText sx={{ color: "#d32f2f" }}>
+                      Este campo es requerido
+                    </FormHelperText>
+                  )}
                 </FormControl>
               )}
             />
